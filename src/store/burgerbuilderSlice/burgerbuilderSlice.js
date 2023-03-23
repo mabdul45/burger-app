@@ -31,7 +31,8 @@ const burgerBuilderSlice = createSlice({
         })
         builder.addCase(fetchIngredients.fulfilled, (state, action) => {
             state.loading = false;
-            state.ingredients = action.payload
+            state.ingredients = action.payload;
+            state.totalPrice = 4
         })
     },
 })

@@ -18,8 +18,8 @@ const App = () => {
             <Route path="/checkout/*" element={<Checkout />} />
             <Route path="/orders" element={<Orders />} />
             <Route path="/logout" element={<Logout />} />
-            <Route path="/auth" element={props => <Auth />} />
-            <Route path="*" element={<BurgerBuilder />} />
+            <Route path="/auth" element={<Auth />} />
+
           </Routes>
         </Layout>
       </div>

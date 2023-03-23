@@ -18,7 +18,6 @@ const INGREDIENT_PRICES = {
 
 const BurgerBuilder = (props) => {
     const { ingredients, totalPrice } = useSelector((state) => state.burgerBuilder);
-    console.log(ingredients);
     const dispatch = useDispatch()
 
     // const state = {
@@ -46,7 +45,7 @@ const BurgerBuilder = (props) => {
 
     useEffect(
         () => {
-            dispatch(fetchIngredients())
+            dispatch(fetchIngredients());
         }
         , [dispatch])
 
