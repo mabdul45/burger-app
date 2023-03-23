@@ -34,7 +34,7 @@ const Orders = () => {
             return () => {
                 ignore = true;
             }
-        }, [])
+        }, [state])
     if (state.orders === []) {
         return <Spinner />
     } else {
