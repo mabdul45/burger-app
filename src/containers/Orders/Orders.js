@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import Order from '../../components/Order/Order';
+import Spinner from '../../components/UI/Spinner/Spinner';
 import axios from '../../axios-orders';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 
@@ -35,17 +36,21 @@ const Orders = () => {
                 ignore = true;
             }
         }, [])
+    if (state.orders === []) {
+        return <Spinner />
+    } else {
+        return (
+            <div>
 
-    return (
-        <div>
-            {state.orders.map(order => (
-                <Order
-                    key={order.id}
-                    ingredients={order.ingredients}
-                    price={order.price} />
-            ))}
-        </div>
-    );
+                {state.orders.map(order => (
+                    <Order
+                        key={order.id}
+                        ingredients={order.ingredients}
+                        price={order.price} />
+                ))}
+            </div>
+        )
+    };
 }
 
 export default withErrorHandler(Orders, axios);
