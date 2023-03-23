@@ -19,6 +19,7 @@ const App = () => {
             <Route path="/orders" element={<Orders />} />
             <Route path="/logout" element={<Logout />} />
             <Route path="/auth" element={props => <Auth />} />
+            <Route path="*" element={<BurgerBuilder />} />
           </Routes>
         </Layout>
       </div>
