@@ -27,6 +27,7 @@ const Orders = () => {
                     }
                 })
                 .catch(err => {
+                    console.log(err.message);
                     setState({ loading: false });
                 });
 

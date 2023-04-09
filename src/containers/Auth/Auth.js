@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from 'react';
-// import { connect } from 'react-redux';
-// import { Redirect } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import Input from '../../components/UI/Input/Input';
 import Button from '../../components/UI/Button/Button';
-import Spinner from '../../components/UI/Spinner/Spinner';
-import classes from './Auth.css';
-// import * as actions from '../../store/actions/index';
+// import Spinner from '../../components/UI/Spinner/Spinner';
+import classes from './Auth.module.css';
+
 import { updateObject, checkValidity } from '../../shared/utility';
-import { useNavigate } from 'react-router-dom';
+import { auth } from '../../store/burgerAuthSlice/burgerAuthSlice'
+// import { useNavigate } from 'react-router-dom';
 
 const Auth = props => {
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
+  const dispatch = useDispatch()
   const [authForm, setAuthForm] = useState({
     email: {
       elementType: 'input',
@@ -44,12 +45,6 @@ const Auth = props => {
   });
   const [isSignup, setIsSignup] = useState(true);
 
-  useEffect(() => {
-    if (!props.buildingBurger && props.authRedirectPath !== '/') {
-      props.onSetAuthRedirectPath();
-    }
-  }, []);
-
   const inputChangedHandler = (event, controlName) => {
     const updatedControls = updateObject(authForm, {
       [controlName]: updateObject(authForm[controlName], {
@@ -66,7 +61,7 @@ const Auth = props => {
 
   const submitHandler = event => {
     event.preventDefault();
-    props.onAuth(authForm.email.value, authForm.password.value, isSignup);
+    dispatch(auth(authForm.email.value, authForm.password.value));
   };
 
   const switchAuthModeHandler = () => {
@@ -94,25 +89,8 @@ const Auth = props => {
     />
   ));
 
-  if (props.loading) {
-    form = <Spinner />;
-  }
-
-  let errorMessage = null;
-
-  if (props.error) {
-    errorMessage = <p>{props.error.message}</p>;
-  }
-
-  let authRedirect = null;
-  if (props.isAuthenticated) {
-    authRedirect = navigate(props.authRedirectPath);
-  }
-
   return (
     <div className={classes.Auth}>
-      {authRedirect}
-      {errorMessage}
       <form onSubmit={submitHandler}>
         {form}
         <Button btnType="Success">SUBMIT</Button>
