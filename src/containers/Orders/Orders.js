@@ -22,7 +22,7 @@ const Orders = () => {
                             id: key
                         });
                     }
-                    if (ignore) {
+                    if (!ignore) {
                         setState({ loading: false, orders: fetchedOrders });
                     }
                 })
