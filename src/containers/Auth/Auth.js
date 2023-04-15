@@ -51,15 +51,15 @@ const Auth = props => {
   console.log(token);
 
   useEffect(() => {
-    if (mounted && building) {
-      if (clicked && building) {
+    if (mounted) {
+      if (clicked && building && token) {
         navigate('/checkout')
-      } else { navigate('/auth') }
+      } if (clicked && !building && token) { navigate('/') }
       // your code here
     } else {
       setMounted(true);
     }
-  }, [mounted, clicked, navigate, building]);
+  }, [mounted, clicked, navigate, building, token]);
 
   const inputChangedHandler = (event, controlName) => {
     const updatedControls = updateObject(authForm, {
@@ -112,9 +112,15 @@ const Auth = props => {
     />
   ));
 
+  // const ERrror = () => { if (clicked && !error) { null } else { error !== null ? error : null } }
+  console.log('CLICKED', clicked);
+
+  const errorMessage = <p> <strong>ERROR:</strong> {clicked && error ? `${error.toLowerCase()} Please Sign In` : null}</p>
+
   return (
     <div className={classes.Auth}>
-      <p>STATUS: {error !== null ? error : isSignup ? 'Please Sighn Up' : 'Please Sighn In'} </p>
+      <p><strong>STATUS:</strong> {isSignup ? 'Please Sign Up' : 'Please Sign In'} </p>
+      {errorMessage}
       <form onSubmit={submitHandler}>
         {form}
         <Button clicked={() => setClicked(true)} btnType="Success">SUBMIT</Button>

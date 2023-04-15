@@ -6,6 +6,7 @@ import { useNavigate, Route, Routes } from 'react-router-dom';
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import ContactData from './ContactData/ContactData';
+import { useEffect } from 'react';
 
 
 const Checkout = (props) => {
@@ -40,6 +41,8 @@ const Checkout = (props) => {
     //     }, [searchParams, state]
     // )
 
+    useEffect(() => { if (!ingredients) { navigate('/') } }, [ingredients, navigate])
+
     const checkoutCancelledHandler = () => {
         navigate("/")
     }
@@ -59,7 +62,7 @@ const Checkout = (props) => {
 
     return (
         <div>
-            {CheckoutSummaryOutPut}
+            {ingredients ? CheckoutSummaryOutPut : <Spinner />}
             <Routes>
                 <Route
                     path={'contact-data'}
