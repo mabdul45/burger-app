@@ -17,7 +17,8 @@ const INGREDIENT_PRICES = {
 };
 
 const BurgerBuilder = (props) => {
-    const { ingredients, totalPrice } = useSelector((state) => state.burgerBuilder);
+    const { ingredients, totalPrice, building } = useSelector((state) => state.burgerBuilder);
+    const { token } = useSelector(state => state.burgerAuth)
     const dispatch = useDispatch()
 
     // const state = {
@@ -120,6 +121,9 @@ const BurgerBuilder = (props) => {
         //     pathname: '/checkout',
         //     search: '?' + queryString
         // });
+        if (building && token === null) {
+            return navigate('/auth')
+        }
         navigate('/checkout')
     }
 

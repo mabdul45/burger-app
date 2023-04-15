@@ -32,7 +32,7 @@ const BuildControls = (props) => {
                 className={styles.OrderButton}
                 disabled={!props.purchasable}
                 onClick={props.ordered} >
-                {token !== null ? 'ORDER NOW' : 'SighnUp'}
+                {token !== null ? 'ORDER NOW' : 'SIGHNIN TO ORDER'}
             </button>
         </div>
     );

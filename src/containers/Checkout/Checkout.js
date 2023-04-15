@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate, Route, Routes } from 'react-router-dom';
 
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
+import Spinner from '../../components/UI/Spinner/Spinner';
 import ContactData from './ContactData/ContactData';
 
 
@@ -48,12 +49,17 @@ const Checkout = (props) => {
         navigate('contact-data', { replace: true })
     }
 
+    let CheckoutSummaryOutPut = <Spinner />
+    if (ingredients) {
+        CheckoutSummaryOutPut = <CheckoutSummary
+            ingredients={ingredients}
+            checkoutCancelled={checkoutCancelledHandler}
+            checkoutContinued={checkoutContinuedHandler} />
+    }
+
     return (
         <div>
-            <CheckoutSummary
-                ingredients={ingredients}
-                checkoutCancelled={checkoutCancelledHandler}
-                checkoutContinued={checkoutContinuedHandler} />
+            {CheckoutSummaryOutPut}
             <Routes>
                 <Route
                     path={'contact-data'}

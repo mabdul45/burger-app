@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import Input from '../../components/UI/Input/Input';
 import Button from '../../components/UI/Button/Button';
 // import Spinner from '../../components/UI/Spinner/Spinner';
 import classes from './Auth.module.css';
-
 import { updateObject, checkValidity } from '../../shared/utility';
 import { auth } from '../../store/burgerAuthSlice/burgerAuthSlice'
-// import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 const Auth = props => {
-  // const navigate = useNavigate()
+  const navigate = useNavigate()
+  const { error, token } = useSelector(state => state.burgerAuth)
+  const { building } = useSelector(state => state.burgerBuilder)
   const dispatch = useDispatch()
   const [authForm, setAuthForm] = useState({
     email: {
@@ -44,6 +46,20 @@ const Auth = props => {
     }
   });
   const [isSignup, setIsSignup] = useState(true);
+  const [clicked, setClicked] = useState(false)
+  const [mounted, setMounted] = useState(false);
+  console.log(token);
+
+  useEffect(() => {
+    if (mounted && building) {
+      if (clicked && building) {
+        navigate('/checkout')
+      } else { navigate('/auth') }
+      // your code here
+    } else {
+      setMounted(true);
+    }
+  }, [mounted, clicked, navigate, building]);
 
   const inputChangedHandler = (event, controlName) => {
     const updatedControls = updateObject(authForm, {
@@ -58,10 +74,17 @@ const Auth = props => {
     });
     setAuthForm(updatedControls);
   };
+  console.log('BUILDING OUTSIDE USEFFECT', building);
 
   const submitHandler = event => {
+    console.log(building);
     event.preventDefault();
-    dispatch(auth(authForm.email.value, authForm.password.value));
+    dispatch(auth({
+      email: authForm.email.value,
+      password: authForm.password.value,
+      isSignup: isSignup
+    }));
+    // setClicked(true)
   };
 
   const switchAuthModeHandler = () => {
@@ -91,9 +114,10 @@ const Auth = props => {
 
   return (
     <div className={classes.Auth}>
+      <p>STATUS: {error !== null ? error : isSignup ? 'Please Sighn Up' : 'Please Sighn In'} </p>
       <form onSubmit={submitHandler}>
         {form}
-        <Button btnType="Success">SUBMIT</Button>
+        <Button clicked={() => setClicked(true)} btnType="Success">SUBMIT</Button>
       </form>
       <Button clicked={switchAuthModeHandler} btnType="Danger">
         SWITCH TO {isSignup ? 'SIGNIN' : 'SIGNUP'}
