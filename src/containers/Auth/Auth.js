@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import Input from '../../components/UI/Input/Input';
 import Button from '../../components/UI/Button/Button';
-// import Spinner from '../../components/UI/Spinner/Spinner';
+import Spinner from '../../components/UI/Spinner/Spinner';
 import classes from './Auth.module.css';
 import { updateObject, checkValidity } from '../../shared/utility';
 import { auth } from '../../store/burgerAuthSlice/burgerAuthSlice'
-import { useEffect } from 'react';
 
 const Auth = props => {
   const navigate = useNavigate()
@@ -111,13 +110,9 @@ const Auth = props => {
       changed={event => inputChangedHandler(event, formElement.id)}
     />
   ));
-
-  // const ERrror = () => { if (clicked && !error) { null } else { error !== null ? error : null } }
-  console.log('CLICKED', clicked);
-
   const errorMessage = <p> <strong>ERROR:</strong> {clicked && error ? `${error.toLowerCase()} Please Sign In` : null}</p>
 
-  return (
+  let authPage = (
     <div className={classes.Auth}>
       <p><strong>STATUS:</strong> {isSignup ? 'Please Sign Up' : 'Please Sign In'} </p>
       {errorMessage}
@@ -128,8 +123,17 @@ const Auth = props => {
       <Button clicked={switchAuthModeHandler} btnType="Danger">
         SWITCH TO {isSignup ? 'SIGNIN' : 'SIGNUP'}
       </Button>
-    </div>
-  );
+    </div>)
+
+  if (mounted) {
+    if (clicked) {
+      const clickedTime = 1000
+      setTimeout(() => {
+        authPage = <Spinner />
+      }, clickedTime);
+    }
+  }
+  return <React.Fragment>{authPage}</React.Fragment>
 };
 
 export default Auth;
