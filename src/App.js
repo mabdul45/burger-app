@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 
 import Layout from './hoc/Layout/Layout';
@@ -7,11 +7,30 @@ import Orders from './containers/Orders/Orders';
 import Checkout from './containers/Checkout/Checkout';
 import Logout from './containers/Auth/Logout/Logout'
 import Auth from './containers/Auth/Auth'
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { burgerAuthActions } from "./store/burgerAuthSlice/burgerAuthSlice";
 
 const App = () => {
 
-  const { token } = useSelector(state => state.burgerAuth)
+  const dispatch = useDispatch()
+  const { token, expirationTime } = useSelector(state => state.burgerAuth)
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    if (mounted) {
+      dispatch(burgerAuthActions.setAutoSighnIn())
+      console.log(expirationTime, new Date().getTime());
+      if (token) {
+        if (expirationTime > new Date().getTime() - 3600) {
+          dispatch(burgerAuthActions.setLogout())
+        }
+      }
+    } else {
+      setMounted(true);
+    }
+  }, [expirationTime, dispatch, token, mounted])
+
 
   return (
     <BrowserRouter>
@@ -43,4 +62,4 @@ const App = () => {
   );
 }
 
-export default App;
+export default App

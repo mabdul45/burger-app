@@ -47,18 +47,24 @@ const Auth = props => {
   const [isSignup, setIsSignup] = useState(true);
   const [clicked, setClicked] = useState(false)
   const [mounted, setMounted] = useState(false);
+  const { loading } = useSelector(state => state.burgerAuth)
   console.log(token);
-
+  console.log('mounted', mounted);
   useEffect(() => {
     if (mounted) {
-      if (clicked && building && token) {
-        navigate('/checkout')
-      } if (clicked && !building && token) { navigate('/') }
-      // your code here
-    } else {
-      setMounted(true);
+      console.log('mounted', mounted);
+      if (token) {
+        console.log('token', token);
+        if (clicked && building) {
+          console.log('building', building);
+          navigate('/checkout')
+        } if (clicked && !building) { navigate('/') }
+      }
     }
-  }, [mounted, clicked, navigate, building, token]);
+    else {
+      setMounted(true)
+    }
+  }, [mounted, clicked, building, token]);
 
   const inputChangedHandler = (event, controlName) => {
     const updatedControls = updateObject(authForm, {
@@ -112,27 +118,22 @@ const Auth = props => {
   ));
   const errorMessage = <p> <strong>ERROR:</strong> {clicked && error ? `${error.toLowerCase()} Please Sign In` : null}</p>
 
-  let authPage = (
-    <div className={classes.Auth}>
-      <p><strong>STATUS:</strong> {isSignup ? 'Please Sign Up' : 'Please Sign In'} </p>
-      {errorMessage}
-      <form onSubmit={submitHandler}>
-        {form}
-        <Button clicked={() => setClicked(true)} btnType="Success">SUBMIT</Button>
-      </form>
-      <Button clicked={switchAuthModeHandler} btnType="Danger">
-        SWITCH TO {isSignup ? 'SIGNIN' : 'SIGNUP'}
-      </Button>
-    </div>)
+  let authPage = null
+  if (!loading) {
+    authPage = (
+      <div className={classes.Auth}>
+        <p><strong>STATUS:</strong> {isSignup ? 'Please Sign Up' : 'Please Sign In'} </p>
+        {errorMessage}
+        <form onSubmit={submitHandler}>
+          {form}
+          <Button clicked={() => setClicked(true)} btnType="Success">SUBMIT</Button>
+        </form>
+        <Button clicked={switchAuthModeHandler} btnType="Danger">
+          SWITCH TO {isSignup ? 'SIGNIN' : 'SIGNUP'}
+        </Button>
+      </div>)
+  } else { return <Spinner /> }
 
-  if (mounted) {
-    if (clicked) {
-      const clickedTime = 1000
-      setTimeout(() => {
-        authPage = <Spinner />
-      }, clickedTime);
-    }
-  }
   return <React.Fragment>{authPage}</React.Fragment>
 };
 

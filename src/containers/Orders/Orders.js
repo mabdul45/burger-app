@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Order from '../../components/Order/Order';
 import axios from '../../axios-orders';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
+import { useSelector } from 'react-redux';
 
 const Orders = () => {
     const [state, setState] = useState({
@@ -10,12 +11,17 @@ const Orders = () => {
         loading: true
     });
 
+    const { token, userId } = useSelector(state => state.burgerAuth)
+
     useEffect(
         () => {
             let ignore = false;
-            axios.get('/orders.json')
+            const queryParams = '?auth=' + token + 'orderBy="userId"&equalTo="' + JSON.parse(userId) + '"';
+            console.log(queryParams);
+            axios.get('/orders.json' + queryParams)
                 .then(res => {
                     const fetchedOrders = [];
+                    console.log(res);
                     for (let key in res.data) {
                         fetchedOrders.push({
                             ...res.data[key],
@@ -34,7 +40,7 @@ const Orders = () => {
             return () => {
                 ignore = true;
             }
-        }, [])
+        }, [token, userId])
 
     return (
         <div>

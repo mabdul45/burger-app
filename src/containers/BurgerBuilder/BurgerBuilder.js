@@ -104,10 +104,15 @@ const BurgerBuilder = (props) => {
 
     const purchaseHandler = () => {
         setPurchasing(true);
+        if (building && token === null) {
+            return navigate('/auth')
+        }
+        navigate('/checkout')
     }
 
     const purchaseCancelHandler = () => {
         setPurchasing(false);
+
     }
 
     const purchaseContinueHandler = () => {
@@ -121,9 +126,6 @@ const BurgerBuilder = (props) => {
         //     pathname: '/checkout',
         //     search: '?' + queryString
         // });
-        if (building && token === null) {
-            return navigate('/auth')
-        }
         navigate('/checkout')
     }
 

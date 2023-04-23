@@ -7,7 +7,8 @@ const initialState = {
     userId: null,
     error: null,
     loading: false,
-    authRedirectPath: '/'
+    authRedirectPath: '/',
+    expirationTime: null
 }
 
 // export const auth = createAsyncThunk(
@@ -105,10 +106,18 @@ const BurgerAuthSlice = createSlice({
     name: 'BurgerAuth',
     initialState,
     reducers: {
+        setAutoSighnIn(state, action) {
+            state.token = localStorage.getItem('token')
+            state.userId = localStorage.getItem('userId')
+            state.expirationTime = localStorage.getItem('expirationTime')
+        },
         setLogout(state, action) {
             state.token = null
             state.userId = null
             state.authRedirectPath = action.payload
+            localStorage.removeItem('token')
+            localStorage.removeItem('userId')
+            localStorage.removeItem('expirationTime')
         }
     },
     extraReducers: builder => {
@@ -118,8 +127,13 @@ const BurgerAuthSlice = createSlice({
         })
         builder.addCase(auth.fulfilled, (state, action) => {
             console.log('action', 'auth fulfilled', action.payload);
+            const expirationTime = new Date().getTime() + action.payload.expiresIn
             state.token = action.payload.idToken
             state.userId = action.payload.localId
+            state.expirationTime = expirationTime
+            localStorage.setItem('token', action.payload.idToken)
+            localStorage.setItem('userId', action.payload.localId)
+            localStorage.setItem('expirationTime', expirationTime)
             state.loading = false
         })
         builder.addCase(auth.rejected, (state, action) => {

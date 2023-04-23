@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 const ContactData = (props) => {
     const navigate = useNavigate()
     const { ingredients, totalPrice } = useSelector(state => state.burgerBuilder)
+    const { token, userId } = useSelector(state => state.burgerAuth)
 
     const [state, setState] = useState({
         orderForm: {
@@ -117,11 +118,13 @@ const ContactData = (props) => {
         const uploadData = {
             ingredients: ingredients,
             price: totalPrice,
-            orderData: formData
+            orderData: formData,
+            userId: userId
         }
 
-        axios.post('/orders.json', uploadData)
+        axios.post('/orders.json?auth=' + token, JSON.stringify(uploadData))
             .then(response => {
+                console.log(response.data.name);
                 setState({ loading: false });
                 navigate('/');
             })
