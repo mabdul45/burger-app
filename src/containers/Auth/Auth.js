@@ -64,7 +64,7 @@ const Auth = props => {
     else {
       setMounted(true)
     }
-  }, [mounted, clicked, building, token]);
+  }, [mounted, clicked, building, token, navigate]);
 
   const inputChangedHandler = (event, controlName) => {
     const updatedControls = updateObject(authForm, {

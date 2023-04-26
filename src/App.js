@@ -20,17 +20,22 @@ const App = () => {
   useEffect(() => {
     if (mounted) {
       dispatch(burgerAuthActions.setAutoSighnIn())
-      console.log(expirationTime, new Date().getTime());
-      if (token) {
-        if (expirationTime > new Date().getTime() - 3600) {
-          dispatch(burgerAuthActions.setLogout())
-        }
+      console.log(expirationTime / 1000, new Date().getTime());
+      if (token && expirationTime < new Date().getTime()) {
+        console.log(expirationTime, new Date().getTime());
+
+        dispatch(burgerAuthActions.setLogout())
       }
-    } else {
+      console.log(3600 * 60, (+expirationTime - +new Date().getTime()) / 1000, +expirationTime);
+      setTimeout(() => {
+        dispatch(burgerAuthActions.setLogout())
+      }, (+expirationTime - +new Date().getTime()) / 1000 * 60)
+    }
+    else {
+
       setMounted(true);
     }
   }, [expirationTime, dispatch, token, mounted])
-
 
   return (
     <BrowserRouter>

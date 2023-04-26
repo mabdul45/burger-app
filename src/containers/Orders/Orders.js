@@ -10,37 +10,39 @@ const Orders = () => {
         orders: [],
         loading: true
     });
-
+    const [mounted, setMounted] = useState(false)
     const { token, userId } = useSelector(state => state.burgerAuth)
 
     useEffect(
         () => {
-            let ignore = false;
-            const queryParams = '?auth=' + token + 'orderBy="userId"&equalTo="' + JSON.parse(userId) + '"';
-            console.log(queryParams);
-            axios.get('/orders.json' + queryParams)
-                .then(res => {
-                    const fetchedOrders = [];
-                    console.log(res);
-                    for (let key in res.data) {
-                        fetchedOrders.push({
-                            ...res.data[key],
-                            id: key
-                        });
-                    }
-                    if (!ignore) {
-                        setState({ loading: false, orders: fetchedOrders });
-                    }
-                })
-                .catch(err => {
-                    console.log(err.message);
-                    setState({ loading: false });
-                });
+            let ignore = false
+            if (mounted) {
+                const queryParams = `?auth=${token}&orderBy="userId"&equalTo="${userId}"`;
+                console.log(queryParams);
+                axios.get('/orders.json' + queryParams)
+                    .then(res => {
+                        const fetchedOrders = [];
+                        console.log(res);
+                        for (let key in res.data) {
+                            fetchedOrders.push({
+                                ...res.data[key],
+                                id: key
+                            });
+                        }
+                        if (!ignore) {
+                            setState({ loading: false, orders: fetchedOrders });
+                        }
+                    })
+                    .catch(err => {
+                        console.log(err.message);
+                        setState({ loading: false });
+                    });
+            } else { setMounted(true) }
 
             return () => {
                 ignore = true;
             }
-        }, [token, userId])
+        }, [token, userId, mounted])
 
     return (
         <div>

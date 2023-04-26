@@ -127,7 +127,7 @@ const BurgerAuthSlice = createSlice({
         })
         builder.addCase(auth.fulfilled, (state, action) => {
             console.log('action', 'auth fulfilled', action.payload);
-            const expirationTime = new Date().getTime() + action.payload.expiresIn
+            const expirationTime = new Date().getTime() + +action.payload.expiresIn + (3600 * 1000)
             state.token = action.payload.idToken
             state.userId = action.payload.localId
             state.expirationTime = expirationTime
